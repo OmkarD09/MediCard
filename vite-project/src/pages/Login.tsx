@@ -12,6 +12,7 @@ import { useForm } from "react-hook-form";
 import * as z from "zod";
 import { Loader2, Shield, ArrowRight } from "lucide-react";
 import { motion } from "framer-motion";
+import { getDefaultProfileIdForUser } from "@/hooks/use-profiles";
 
 const loginSchema = z.object({
   email: z.string().email("Enter a valid email address"),
@@ -35,7 +36,10 @@ export function Login() {
   });
 
   useEffect(() => {
-    if (user) setLocation("/profile/new");
+    if (!user) return;
+
+    const profileId = getDefaultProfileIdForUser(user.id);
+    setLocation(profileId ? `/dashboard/${profileId}` : "/profile/new");
   }, [user, setLocation]);
 
   const onSubmit = async (values: LoginValues) => {
@@ -46,7 +50,7 @@ export function Login() {
         title: "Welcome back",
         description: "You’re signed in. Create your emergency profile anytime.",
       });
-      setLocation("/profile/new");
+      // Redirect happens in the useEffect once `user` is available.
     } catch (err) {
       const message = err instanceof Error ? err.message : "Login failed";
       toast({

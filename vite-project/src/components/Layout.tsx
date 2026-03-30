@@ -1,6 +1,6 @@
 import { ReactNode } from "react";
 import { Link } from "wouter";
-import { ShieldPlus, Menu } from "lucide-react";
+import { ShieldPlus, Menu, LogOut } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -8,12 +8,22 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { useLocation } from "wouter";
+import { useAuth } from "@/hooks/use-auth";
 
 interface LayoutProps {
   children: ReactNode;
 }
 
 export function Layout({ children }: LayoutProps) {
+  const { user, logout } = useAuth();
+  const [, setLocation] = useLocation();
+
+  const handleLogout = () => {
+    logout();
+    setLocation("/login");
+  };
+
   return (
     <div className="min-h-screen flex flex-col bg-background relative overflow-hidden">
       {/* Decorative background gradient */}
@@ -39,6 +49,27 @@ export function Layout({ children }: LayoutProps) {
                 Create Profile
               </Button>
             </Link>
+            {user ? (
+              <Button
+                variant="outline"
+                className="rounded-full"
+                onClick={handleLogout}
+              >
+                <LogOut className="w-4 h-4 mr-2" />
+                Logout
+              </Button>
+            ) : (
+              <>
+                <Link href="/login">
+                  <Button variant="outline" className="rounded-full">Log in</Button>
+                </Link>
+                <Link href="/signup">
+                  <Button className="rounded-full shadow-md shadow-primary/20 hover:shadow-lg hover:shadow-primary/30 transition-all">
+                    Sign up
+                  </Button>
+                </Link>
+              </>
+            )}
           </nav>
 
           {/* Mobile Nav */}
@@ -56,6 +87,26 @@ export function Layout({ children }: LayoutProps) {
                 <DropdownMenuItem asChild>
                   <Link href="/profile/new" className="w-full cursor-pointer py-2 font-medium text-primary">Create Profile</Link>
                 </DropdownMenuItem>
+                {user ? (
+                  <DropdownMenuItem asChild>
+                    <button
+                      type="button"
+                      className="w-full cursor-pointer py-2 font-medium text-destructive"
+                      onClick={handleLogout}
+                    >
+                      Logout
+                    </button>
+                  </DropdownMenuItem>
+                ) : (
+                  <>
+                    <DropdownMenuItem asChild>
+                      <Link href="/login" className="w-full cursor-pointer py-2 font-medium">Log in</Link>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem asChild>
+                      <Link href="/signup" className="w-full cursor-pointer py-2 font-medium text-primary">Sign up</Link>
+                    </DropdownMenuItem>
+                  </>
+                )}
               </DropdownMenuContent>
             </DropdownMenu>
           </div>

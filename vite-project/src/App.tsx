@@ -9,6 +9,8 @@ import { Landing } from "@/pages/Landing";
 import { Dashboard } from "@/pages/Dashboard";
 import { ProfileForm } from "@/pages/ProfileForm";
 import { EmergencyView } from "@/pages/EmergencyView";
+import { Login } from "@/pages/Login";
+import { Signup } from "@/pages/Signup";
 
 const queryClient = new QueryClient();
 
@@ -20,6 +22,8 @@ function Router() {
       <Route path="/profile/:id/edit" component={ProfileForm} />
       <Route path="/dashboard/:id" component={Dashboard} />
       <Route path="/emergency/:id" component={EmergencyView} />
+      <Route path="/login" component={Login} />
+      <Route path="/signup" component={Signup} />
       <Route component={NotFound} />
     </Switch>
   );
